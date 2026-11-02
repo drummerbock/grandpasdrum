@@ -1,0 +1,35 @@
+name: Deploy to DreamHost VPS (manual until verified)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up SSH with verified host key
+        env:
+          DEPLOY_KEY: ${{ secrets.VPS_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          test -n "$DEPLOY_KEY"
+          test -n "$KNOWN_HOSTS"
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+      - name: Transfer application files
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          test -n "$VPS_HOST"
+          test -n "$VPS_USER"
+          tar --exclude=.git --exclude=.github -czf /tmp/grandpasdrum.tar.gz .
+          scp -o StrictHostKeyChecking=yes /tmp/grandpasdrum.tar.gz "$VPS_USER@$VPS_HOST:~/grandpasdrum.tar.gz"
+          ssh -o StrictHostKeyChecking=yes "$VPS_USER@$VPS_HOST" 'mkdir -p ~/grandpasdrum && tar -xzf ~/grandpasdrum.tar.gz -C ~/grandpasdrum && rm ~/grandpasdrum.tar.gz'
+      - name: Deployment note
+        run: echo "Files transferred. Runtime service installation and restart will be configured after VPS inspection."
