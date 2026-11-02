@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#493426">
+  <meta name="description" content="{{ description }}">
+  <meta property="og:title" content="{{ title }} | Grandpa's Drum">
+  <meta property="og:description" content="{{ description }}">
+  <title>{{ title }} | Grandpa's Drum</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='site.css') }}">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <div class="top-note">
+    <div class="shell top-note-inner">
+      <span>A little history. A lot more music.</span>
+      <span>An initiative of Fast Hands Drum Studio · Hudson Valley, New York</span>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="identity" href="/" aria-label="Grandpa's Drum, home">
+        <span class="identity-icon" aria-hidden="true">
+          <svg viewBox="0 0 60 60" width="44" height="44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="30" cy="21" rx="19" ry="7" stroke="currentColor" stroke-width="2"/>
+            <path d="M11 21v18c0 4 8.5 8 19 8s19-4 19-8V21M11 39c0-4 8.5-8 19-8s19 4 19 8M20 27v18m10-16v18m10-20v18" stroke="currentColor" stroke-width="2"/>
+            <path d="M15 7l22 15M45 7 23 22" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="identity-type"><strong>GRANDPA'S DRUM</strong><small>GIVE THE MUSIC ANOTHER LIFE</small></span>
+      </a>
+      <nav class="desktop-nav" aria-label="Main navigation">
+        <a href="/our-story" {% if slug|default('') == 'our-story' %}aria-current="page"{% endif %}>Our Story</a>
+        <a href="/impact" {% if slug|default('') == 'impact' %}aria-current="page"{% endif %}>Our Impact</a>
+        <a href="/get-involved" {% if slug|default('') == 'get-involved' %}aria-current="page"{% endif %}>Get Involved</a>
+        <a href="/request" class="nav-request" {% if slug|default('') == 'request' %}aria-current="page"{% endif %}>Request</a>
+        <a href="/donate" class="nav-cta" {% if slug|default('') == 'donate' %}aria-current="page"{% endif %}>Donate a Drum <span aria-hidden="true">↗</span></a>
+      </nav>
+      <details class="mobile-nav">
+        <summary aria-label="Open navigation">Menu <span aria-hidden="true">☰</span></summary>
+        <nav aria-label="Mobile navigation">
+          <a href="/our-story">Our Story</a><a href="/impact">Our Impact</a>
+          <a href="/get-involved">Get Involved</a><a href="/request">Request an Instrument</a>
+          <a href="/donate">Donate an Instrument</a>
+        </nav>
+      </details>
+    </div>
+  </header>
+  <main id="main-content">{% block content %}{% endblock %}</main>
+  <footer class="site-footer">
+    <div class="shell">
+      <div class="footer-main">
+        <div><p class="eyebrow light">A legacy worth carrying on</p><h2>Good instruments<br><em>deserve another song.</em></h2></div>
+        <div class="footer-links"><a href="/our-story">Our Story</a><a href="/donate">Donate an Instrument</a><a href="/request">Request an Instrument</a><a href="/impact">Our Impact</a><a href="/get-involved">Get Involved</a></div>
+      </div>
+      <div class="footer-bottom">
+        <p>© {{ 2026 }} Grandpa's Drum · An initiative of Fast Hands Drum Studio</p>
+        <p>Beginning in the Hudson Valley, New York.</p>
+      </div>
+      <p class="legal">Grandpa's Drum is not currently an independently incorporated nonprofit or recognized 501(c)(3) organization. Instrument inquiries are subject to review; charitable tax deductibility should not be assumed.</p>
+    </div>
+  </footer>
+</body>
+</html>
