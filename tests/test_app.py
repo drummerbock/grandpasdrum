@@ -12,7 +12,11 @@ class ApplicationTests(unittest.TestCase):
         self.assertEqual(response.get_json()["status"], "ok")
 
     def test_home(self):
-        self.assertEqual(self.client.get("/").status_code, 200)
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"A second life for every beat", response.data)
+        self.assertIn(b"not presently a registered nonprofit", response.data)
+        self.assertIn(b"Donation intake is coming soon", response.data)
 
 
 if __name__ == "__main__":
