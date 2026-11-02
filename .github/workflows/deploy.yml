@@ -1,11 +1,20 @@
-name: Deploy to DreamHost VPS (manual until verified)
+name: Deploy to DreamHost VPS
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
+
 permissions:
   contents: read
+
+concurrency:
+  group: grandpasdrum-production
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v4
       - name: Set up SSH with verified host key
@@ -21,15 +30,34 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
+
       - name: Transfer application files
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
         run: |
+          set -euo pipefail
           test -n "$VPS_HOST"
           test -n "$VPS_USER"
-          tar --exclude=.git --exclude=.github -czf /tmp/grandpasdrum.tar.gz .
+          tar --exclude=.git --exclude=.github --exclude=.venv --exclude=.env --exclude=uploads --exclude='*.sqlite3' -czf /tmp/grandpasdrum.tar.gz .
           scp -o StrictHostKeyChecking=yes /tmp/grandpasdrum.tar.gz "$VPS_USER@$VPS_HOST:~/grandpasdrum.tar.gz"
-          ssh -o StrictHostKeyChecking=yes "$VPS_USER@$VPS_HOST" 'mkdir -p ~/grandpasdrum && tar -xzf ~/grandpasdrum.tar.gz -C ~/grandpasdrum && rm ~/grandpasdrum.tar.gz'
-      - name: Deployment note
-        run: echo "Files transferred. Runtime service installation and restart will be configured after VPS inspection."
+          ssh -o StrictHostKeyChecking=yes "$VPS_USER@$VPS_HOST" 'bash -se' <<'REMOTE'
+          set -euo pipefail
+          cd ~/grandpasdrum
+          test -x .venv/bin/python
+          tar -xzf ~/grandpasdrum.tar.gz
+          rm ~/grandpasdrum.tar.gz
+          .venv/bin/python -m pip install -r requirements.txt
+          .venv/bin/python -m unittest discover -s tests -v
+          systemctl --user restart grandpasdrum
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if curl --fail --silent --show-error http://127.0.0.1:8765/health; then
+              echo "Deployment health check passed"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Deployment health check failed" >&2
+          journalctl --user -u grandpasdrum --no-pager -n 30 || true
+          exit 1
+          REMOTE
