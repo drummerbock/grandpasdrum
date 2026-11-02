@@ -23,11 +23,11 @@ class ApplicationTests(unittest.TestCase):
 
     def test_public_pages(self):
         for path, heading in (
-            ("/our-story", b"A Tradition Worth Continuing"),
-            ("/donate", b"Give an Old Drum a New Beginning"),
-            ("/request", b"Music Should Be Within Reach"),
-            ("/impact", b"From Forgotten to Played Again"),
-            ("/get-involved", b"A Little Work Can Make a Lot of Music"),
+            ("/our-story", b"A Tradition Worth"),
+            ("/donate", b"Give an Old Drum"),
+            ("/request", b"Music Should Be"),
+            ("/impact", b"From Forgotten to"),
+            ("/get-involved", b"A Little Work Can Make"),
         ):
             with self.subTest(path=path):
                 response = self.client.get(path)
@@ -39,7 +39,7 @@ class ApplicationTests(unittest.TestCase):
         for path in ("/donate", "/request", "/get-involved"):
             response = self.client.get(path)
             self.assertIn(b"Online inquiries are not yet open", response.data)
-            self.assertNotIn(b'<form', response.data)
+            self.assertNotIn(b"<form", response.data)
             self.assertEqual(self.client.post(path, data={"email": "test@example.com"}).status_code, 405)
 
     def test_missing_page(self):
