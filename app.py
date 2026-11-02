@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 
 app = Flask(__name__)
 
@@ -10,4 +10,4 @@ def health():
 
 @app.get("/")
 def index():
-    return "Grandpa's Drum is being prepared.", 200
+    return render_template("index.html")
