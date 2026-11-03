@@ -47,13 +47,25 @@ class ApplicationTests(unittest.TestCase):
         self.assertNotIn(b"<form", response.data)
         self.assertEqual(self.client.post("/donate", data={"email": "test@example.com"}).status_code, 405)
 
-    def test_request_and_volunteer_not_yet_open(self):
-        for path in ("/request", "/get-involved"):
-            response = self.client.get(path)
-            self.assertIn(b"Online inquiries are not yet open", response.data)
-            self.assertNotIn(b'data-fillout-id=', response.data)
-            self.assertNotIn(b"<form", response.data)
-            self.assertEqual(self.client.post(path, data={"email": "test@example.com"}).status_code, 405)
+    def test_first_stage_applicant_information_embed(self):
+        response = self.client.get("/request")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'data-fillout-id="gexJNppcEzus"', response.data)
+        self.assertIn(b'data-fillout-embed-type="standard"', response.data)
+        self.assertIn(b'data-fillout-dynamic-resize', response.data)
+        self.assertIn(b'https://server.fillout.com/embed/v1/', response.data)
+        self.assertIn(b"first stage", response.data.lower())
+        self.assertIn(b'href="/privacy"', response.data)
+        self.assertNotIn(b"Online inquiries are not yet open", response.data)
+        self.assertNotIn(b"<form", response.data)
+        self.assertEqual(self.client.post("/request", data={"email": "test@example.com"}).status_code, 405)
+
+    def test_volunteer_inquiries_not_yet_open(self):
+        response = self.client.get("/get-involved")
+        self.assertIn(b"Online inquiries are not yet open", response.data)
+        self.assertNotIn(b'data-fillout-id=', response.data)
+        self.assertNotIn(b"<form", response.data)
+        self.assertEqual(self.client.post("/get-involved", data={"email": "test@example.com"}).status_code, 405)
 
     def test_privacy_notice_and_disclosures(self):
         response = self.client.get("/privacy")
@@ -63,6 +75,7 @@ class ApplicationTests(unittest.TestCase):
         self.assertIn(b"Google Fonts", response.data)
         self.assertIn(b"Unsplash", response.data)
         self.assertIn(b"Fillout", response.data)
+        self.assertIn(b"Instrument request applicant information", response.data)
         self.assertIn(b"501(c)(3)", response.data)
         self.assertNotIn(b"<form", response.data)
         home = self.client.get("/")

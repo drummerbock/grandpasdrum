@@ -312,3 +312,20 @@ h1 em,h2 em,h3 em{font-weight:400;color:var(--oxblood)}
   .donate-form-panel{padding:10px 7px}
   .donate-form-lead{font-size:14px}
 }
+
+/* First-stage instrument request form uses the shared heritage palette */
+.request-intro-section{padding-bottom:72px}
+.request-form-section{background:var(--paper);padding:75px 0 95px;border-top:1px solid var(--line)}
+.request-form-shell{max-width:870px;margin:0 auto}
+.request-form-shell h2{font-size:clamp(32px,4vw,52px);margin-bottom:18px}
+.request-form-lead{max-width:760px;font-size:15px;line-height:1.95;color:var(--muted);margin-bottom:26px}
+.request-form-panel{background:var(--paper-light);border:1px solid var(--line);padding:20px 24px}
+.request-form-panel [data-fillout-embed-type="standard"]{min-height:500px}
+.request-privacy-note{font:400 12px/1.85 var(--sans);color:var(--muted);margin-top:21px}
+.request-privacy-note a{text-decoration:underline;text-underline-offset:3px;color:var(--oxblood)}
+@media(max-width:620px){
+  .request-intro-section{padding-bottom:48px}
+  .request-form-section{padding:52px 0 65px}
+  .request-form-panel{padding:10px 7px}
+  .request-form-lead{font-size:14px}
+}

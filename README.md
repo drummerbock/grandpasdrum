@@ -12,11 +12,11 @@ Grandpa's Drum is a philanthropic initiative of Fast Hands Drum Studio, beginnin
 
 ## Launch safety
 
-**The donation page embeds a Fillout form** (ID `6ZDCbVfhi6us`) using the vendor's standard script and dynamic resizing. Submissions, uploads, notifications, spam protection, storage, and account access are managed in Fillout, not by Flask. The site has no native POST endpoint for donation submissions. Instrument requests and volunteer inquiries are not enabled yet.
+**The donation page embeds a Fillout form** (ID `6ZDCbVfhi6us`) using the vendor's standard script and dynamic resizing. Submissions, uploads, notifications, spam protection, storage, and account access are managed in Fillout, not by Flask. The site has no native POST endpoint for donation submissions. The Request an Instrument page also embeds a separate Fillout form (ID `gexJNppcEzus`) for **first-stage applicant information**, not a complete application, guaranteed placement, or instrument lending commitment. Volunteer inquiries are not enabled yet.
 
-Before merging this change or accepting real submissions: verify the form is published and accessible; review its fields and confirmation flow; restrict who may access Fillout submissions and uploaded files; configure notifications and spam protection; establish a dedicated privacy contact channel, a retention/deletion process, and confirm the published privacy notice accurately reflects actual Fillout settings. Also restrict direct access to the Gunicorn service port and review reverse-proxy and HTTPS settings. Test on desktop and mobile.
+Before merging this change or accepting real submissions: verify **both** forms are published and accessible; review their fields, applicant/guardian contact handling and confirmation flows; restrict who may access Fillout submissions and uploaded files; configure notifications and spam protection; establish a dedicated privacy contact channel, a retention/deletion process, and confirm the published privacy notice accurately reflects actual Fillout settings. Also restrict direct access to the Gunicorn service port and review reverse-proxy and HTTPS settings. Test on desktop and mobile.
 
-Do not create a duplicate Flask intake backend unless a later decision calls for custom data storage.
+No lending policy has been adopted. Do not describe the applicant information form as approval for an instrument, or imply loans are available. Do not create a duplicate Flask intake backend unless a later decision calls for custom data storage.
 
 The site accurately identifies Grandpa's Drum as an initiative of Fast Hands Drum Studio. It does **not** claim 501(c)(3) status or tax-deductible donations.
 
