@@ -268,3 +268,30 @@ h1 em,h2 em,h3 em{font-weight:400;color:var(--oxblood)}
   .empty-illustration{min-height:230px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
+
+/* Accessibility and resilient small-screen layout */
+:where(a,button,summary):focus-visible{outline:3px solid #b49259;outline-offset:4px}
+.mobile-nav summary{min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mobile-nav nav a{min-height:44px;display:flex;align-items:center}
+.mobile-nav nav a:focus-visible{background:#efe4d0}
+@media(max-width:620px){
+  .top-note-inner{overflow-wrap:anywhere}
+  .identity{min-width:0}
+  .identity-type{min-width:0}
+  .identity-type strong{overflow-wrap:anywhere}
+  .footer-links{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .footer-links a{overflow-wrap:anywhere}
+}
+@media(max-width:360px){
+  .shell{width:calc(100% - 28px)}
+  .identity-icon{width:36px;height:36px;flex-shrink:0}
+  .identity-type strong{font-size:11px}
+  .identity-type small{font-size:5.8px}
+  .mobile-nav summary{padding:8px}
+  .mobile-nav nav{min-width:min(245px,calc(100vw - 28px))}
+  .ticker i{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}

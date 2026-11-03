@@ -55,6 +55,20 @@ class ApplicationTests(unittest.TestCase):
         self.assertIn(b'href="/privacy"', home.data)
         self.assertIn(b"not a separately incorporated nonprofit", home.data)
 
+    def test_performance_and_accessibility_hints(self):
+        home = self.client.get("/")
+        self.assertIn(b'fetchpriority="high"', home.data)
+        self.assertIn(b'loading="lazy"', home.data)
+        self.assertIn(b'decoding="async"', home.data)
+        self.assertIn(b'sizes="(max-width: 860px) 100vw, 45vw"', home.data)
+        self.assertIn(b'aria-label="Toggle navigation menu"', home.data)
+        self.assertIn(b'<a href="/">Home</a>', home.data)
+        self.assertIn(b'href="#main-content"', home.data)
+        stylesheet = self.client.get("/static/site.css")
+        self.assertEqual(stylesheet.status_code, 200)
+        self.assertIn(b"prefers-reduced-motion:reduce", stylesheet.data)
+        self.assertIn(b"focus-visible", stylesheet.data)
+
     def test_missing_page(self):
         self.assertEqual(self.client.get("/nonexistent-page").status_code, 404)
 

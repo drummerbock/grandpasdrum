@@ -9,6 +9,7 @@
   <meta property="og:description" content="{{ description }}">
   <title>{{ title }} | Grandpa's Drum</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://images.unsplash.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='site.css') }}">
@@ -41,8 +42,9 @@
         <a href="/donate" class="nav-cta" {% if slug|default('') == 'donate' %}aria-current="page"{% endif %}>Donate a Drum <span aria-hidden="true">↗</span></a>
       </nav>
       <details class="mobile-nav">
-        <summary aria-label="Open navigation">Menu <span aria-hidden="true">☰</span></summary>
+        <summary aria-label="Toggle navigation menu">Menu <span aria-hidden="true">☰</span></summary>
         <nav aria-label="Mobile navigation">
+          <a href="/">Home</a>
           <a href="/our-story">Our Story</a><a href="/impact">Our Impact</a>
           <a href="/get-involved">Get Involved</a><a href="/request">Request an Instrument</a>
           <a href="/donate">Donate an Instrument</a>
