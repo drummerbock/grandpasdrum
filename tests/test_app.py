@@ -35,10 +35,23 @@ class ApplicationTests(unittest.TestCase):
                 self.assertIn(heading, response.data)
                 self.assertIn(b"Hudson Valley", response.data)
 
-    def test_no_intake_or_personal_data_collection_yet(self):
-        for path in ("/donate", "/request", "/get-involved"):
+    def test_donation_form_embed(self):
+        response = self.client.get("/donate")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'data-fillout-id="6ZDCbVfhi6us"', response.data)
+        self.assertIn(b'data-fillout-embed-type="standard"', response.data)
+        self.assertIn(b'data-fillout-dynamic-resize', response.data)
+        self.assertIn(b'https://server.fillout.com/embed/v1/', response.data)
+        self.assertIn(b'href="/privacy"', response.data)
+        self.assertNotIn(b"Online inquiries are not yet open", response.data)
+        self.assertNotIn(b"<form", response.data)
+        self.assertEqual(self.client.post("/donate", data={"email": "test@example.com"}).status_code, 405)
+
+    def test_request_and_volunteer_not_yet_open(self):
+        for path in ("/request", "/get-involved"):
             response = self.client.get(path)
             self.assertIn(b"Online inquiries are not yet open", response.data)
+            self.assertNotIn(b'data-fillout-id=', response.data)
             self.assertNotIn(b"<form", response.data)
             self.assertEqual(self.client.post(path, data={"email": "test@example.com"}).status_code, 405)
 
@@ -49,6 +62,7 @@ class ApplicationTests(unittest.TestCase):
         self.assertIn(b"Fast Hands Drum Studio", response.data)
         self.assertIn(b"Google Fonts", response.data)
         self.assertIn(b"Unsplash", response.data)
+        self.assertIn(b"Fillout", response.data)
         self.assertIn(b"501(c)(3)", response.data)
         self.assertNotIn(b"<form", response.data)
         home = self.client.get("/")
