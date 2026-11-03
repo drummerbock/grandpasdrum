@@ -295,3 +295,20 @@ h1 em,h2 em,h3 em{font-weight:400;color:var(--oxblood)}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+/* Donation intake — native page styling around the responsive Fillout embed */
+.donate-intro-section{padding-bottom:72px}
+.donate-form-section{background:var(--paper);padding-top:75px;padding-bottom:95px;border-top:1px solid var(--line)}
+.donate-form-shell{max-width:870px;margin:0 auto}
+.donate-form-shell h2{font-size:clamp(32px,4vw,52px);margin-bottom:18px}
+.donate-form-lead{max-width:760px;font-size:15px;line-height:1.95;color:var(--muted);margin-bottom:26px}
+.donate-form-panel{background:var(--paper-light);border:1px solid var(--line);padding:20px 24px}
+.donate-form-panel [data-fillout-embed-type="standard"]{min-height:500px}
+.donate-privacy-note{font:400 12px/1.85 var(--sans);color:var(--muted);margin-top:21px}
+.donate-privacy-note a{text-decoration:underline;text-underline-offset:3px;color:var(--oxblood)}
+@media(max-width:620px){
+  .donate-intro-section{padding-bottom:48px}
+  .donate-form-section{padding:52px 0 65px}
+  .donate-form-panel{padding:10px 7px}
+  .donate-form-lead{font-size:14px}
+}
