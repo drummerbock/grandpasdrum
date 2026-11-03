@@ -1,15 +1,15 @@
-from flask import Flask, abort, jsonify, render_template, Response, url_for
+from flask import Flask, abort, jsonify, render_template, Response
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 app = Flask(__name__)
 SITE_URL = "https://grandpasdrum.com"
 
 PAGES = {
-    "our-story": {"title": "Our Story", "description": "The grandfather, the repair bench, and the legacy behind Grandpa's Drum."},
-    "donate": {"title": "Donate an Instrument", "description": "Learn about donating drums and percussion equipment to Grandpa's Drum in the Hudson Valley."},
-    "request": {"title": "Request an Instrument", "description": "Learn how Grandpa's Drum intends to help individuals, schools and organizations access instruments."},
-    "impact": {"title": "Our Impact", "description": "Follow the instruments and restoration stories of Grandpa's Drum as the initiative grows."},
-    "get-involved": {"title": "Get Involved", "description": "Explore ways to help Grandpa's Drum restore and redistribute musical instruments."},
+    "our-story": {"title": "Our Story", "description": "Learn how a grandfather's generosity inspired Grandpa's Drum to restore and redistribute used percussion instruments in New York's Hudson Valley."},
+    "donate": {"title": "Donate Used Drums in the Hudson Valley", "description": "Learn how to offer used drums, cymbals and percussion equipment to Grandpa's Drum for restoration and future redistribution in the Hudson Valley."},
+    "request": {"title": "Request a Percussion Instrument", "description": "Grandpa's Drum is preparing to provide restored percussion instruments to students, schools and community programs in New York's Hudson Valley."},
+    "impact": {"title": "Restoration Stories & Impact", "description": "Follow Grandpa's Drum as we begin documenting drum restorations, instrument donations and community impact in the Hudson Valley."},
+    "get-involved": {"title": "Get Involved", "description": "Learn how musicians, repair technicians, educators and neighbors can help Grandpa's Drum restore and redistribute percussion instruments."},
 }
 
 
