@@ -14,6 +14,19 @@
   <meta property="og:title" content="{{ title }} | Grandpa's Drum">
   <meta property="og:description" content="{{ description }}">
   <title>{{ title }} | Grandpa's Drum</title>
+  {% if request.path == '/' %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Grandpa's Drum",
+    "url": "https://grandpasdrum.com/",
+    "description": "An initiative of Fast Hands Drum Studio that restores and redistributes used percussion instruments.",
+    "areaServed": {"@type": "Place", "name": "Hudson Valley, New York"},
+    "parentOrganization": {"@type": "Organization", "name": "Fast Hands Drum Studio"}
+  }
+  </script>
+  {% endif %}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://images.unsplash.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
