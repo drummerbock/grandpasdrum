@@ -329,3 +329,25 @@ h1 em,h2 em,h3 em{font-weight:400;color:var(--oxblood)}
   .request-form-panel{padding:10px 7px}
   .request-form-lead{font-size:14px}
 }
+
+/* Contact page: heritage styling for the external Fillout form */
+.contact-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(250px,.65fr);gap:7%;align-items:start}
+.contact-main h2{font-size:clamp(32px,4vw,52px);margin-bottom:18px}
+.contact-lead{font-size:15px;line-height:1.95;color:var(--muted);max-width:670px}
+.contact-form-panel{background:var(--paper);border:1px solid var(--line);padding:18px 22px;margin-top:28px}
+.contact-form-panel [data-fillout-embed-type="standard"]{min-height:500px}
+.contact-privacy-note{font:400 12px/1.85 var(--sans);color:var(--muted);margin-top:20px}
+.contact-privacy-note a{color:var(--oxblood);text-decoration:underline;text-underline-offset:3px}
+.contact-layout .info-panel .text-link{margin:0 0 8px}
+@media(max-width:1080px){
+  .desktop-nav{display:none}
+  .mobile-nav{display:block;position:relative;font:700 13px var(--sans)}
+  .mobile-nav summary{cursor:pointer;list-style:none;border:1px solid #cbbba3;padding:10px 13px}
+  .mobile-nav summary::-webkit-details-marker{display:none}
+  .mobile-nav summary span{margin-left:13px;color:var(--oxblood)}
+  .mobile-nav nav{position:absolute;right:0;top:47px;min-width:245px;display:flex;flex-direction:column;padding:14px;background:var(--paper-light);border:1px solid var(--line);box-shadow:0 12px 30px #3022192b}
+  .mobile-nav nav a{padding:10px;text-decoration:none}
+  .mobile-nav nav a:hover{background:#efe4d0}
+}
+@media(max-width:860px){.contact-layout{grid-template-columns:1fr;gap:38px}.contact-main{min-width:0}}
+@media(max-width:620px){.contact-form-panel{padding:10px 7px}.contact-lead{font-size:14px}}
