@@ -12,9 +12,11 @@ Grandpa's Drum is a philanthropic initiative of Fast Hands Drum Studio, beginnin
 
 ## Launch safety
 
-**Online instrument donation, recipient, and volunteer inquiries are intentionally not enabled yet.** The public pages describe the proposed process, but do not render forms, accept POST submissions, upload photos, or store personal data.
+**The donation page embeds a Fillout form** (ID `6ZDCbVfhi6us`) using the vendor's standard script and dynamic resizing. Submissions, uploads, notifications, spam protection, storage, and account access are managed in Fillout, not by Flask. The site has no native POST endpoint for donation submissions. Instrument requests and volunteer inquiries are not enabled yet.
 
-Before enabling intake: restrict direct access to the Gunicorn service port, review reverse-proxy and HTTPS settings, design a private database/storage and access controls, implement CSRF protection and rate limiting, establish spam controls, photo upload validation, privacy/retention practices, and notification handling. Add a secure administrator workflow before collecting submissions.
+Before merging this change or accepting real submissions: verify the form is published and accessible; review its fields and confirmation flow; restrict who may access Fillout submissions and uploaded files; configure notifications and spam protection; establish a dedicated privacy contact channel, a retention/deletion process, and confirm the published privacy notice accurately reflects actual Fillout settings. Also restrict direct access to the Gunicorn service port and review reverse-proxy and HTTPS settings. Test on desktop and mobile.
+
+Do not create a duplicate Flask intake backend unless a later decision calls for custom data storage.
 
 The site accurately identifies Grandpa's Drum as an initiative of Fast Hands Drum Studio. It does **not** claim 501(c)(3) status or tax-deductible donations.
 
