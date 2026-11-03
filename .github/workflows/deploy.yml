@@ -17,6 +17,13 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test before production transfer
+        run: |
+          python -m pip install -r requirements.txt
+          python -m unittest discover -s tests -v
       - name: Set up SSH with verified host key
         env:
           DEPLOY_KEY: ${{ secrets.VPS_SSH_KEY }}
@@ -61,3 +68,10 @@ jobs:
           journalctl --user -u grandpasdrum --no-pager -n 30 || true
           exit 1
           REMOTE
+
+      - name: Verify public HTTPS site after deployment
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --retry 3 --retry-delay 2 --max-time 20 https://grandpasdrum.com/health | python -c 'import json,sys; assert json.load(sys.stdin)["status"] == "ok"'
+          curl --fail --silent --show-error --max-time 20 https://grandpasdrum.com/robots.txt | grep -Fx 'Sitemap: https://grandpasdrum.com/sitemap.xml'
+          curl --fail --silent --show-error --max-time 20 https://grandpasdrum.com/sitemap.xml | grep -q 'https://grandpasdrum.com/privacy'
