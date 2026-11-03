@@ -42,6 +42,19 @@ class ApplicationTests(unittest.TestCase):
             self.assertNotIn(b"<form", response.data)
             self.assertEqual(self.client.post(path, data={"email": "test@example.com"}).status_code, 405)
 
+    def test_privacy_notice_and_disclosures(self):
+        response = self.client.get("/privacy")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Privacy", response.data)
+        self.assertIn(b"Fast Hands Drum Studio", response.data)
+        self.assertIn(b"Google Fonts", response.data)
+        self.assertIn(b"Unsplash", response.data)
+        self.assertIn(b"501(c)(3)", response.data)
+        self.assertNotIn(b"<form", response.data)
+        home = self.client.get("/")
+        self.assertIn(b'href="/privacy"', home.data)
+        self.assertIn(b"not a separately incorporated nonprofit", home.data)
+
     def test_missing_page(self):
         self.assertEqual(self.client.get("/nonexistent-page").status_code, 404)
 
