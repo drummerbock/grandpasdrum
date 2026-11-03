@@ -69,6 +69,29 @@ class ApplicationTests(unittest.TestCase):
         self.assertIn(b"prefers-reduced-motion:reduce", stylesheet.data)
         self.assertIn(b"focus-visible", stylesheet.data)
 
+    def test_seo_metadata(self):
+        for path in ("/", "/our-story", "/donate", "/request", "/impact", "/get-involved", "/privacy"):
+            with self.subTest(path=path):
+                response = self.client.get(path)
+                self.assertEqual(response.status_code, 200)
+                self.assertIn(('href="https://grandpasdrum.com' + path + '"').encode(), response.data)
+                self.assertIn(b'name="description"', response.data)
+                self.assertIn(b'property="og:url"', response.data)
+        self.assertIn(b'application/ld+json', self.client.get("/").data)
+        self.assertIn(b'parentOrganization', self.client.get("/").data)
+        self.assertIn(b'noindex, follow', self.client.get("/missing").data)
+
+    def test_sitemap_and_robots(self):
+        sitemap = self.client.get("/sitemap.xml")
+        self.assertEqual(sitemap.status_code, 200)
+        self.assertIn(b"application/xml", sitemap.content_type.encode())
+        for path in ("/", "/our-story", "/donate", "/request", "/impact", "/get-involved", "/privacy"):
+            self.assertIn(("https://grandpasdrum.com" + path + "</").encode(), sitemap.data)
+        self.assertNotIn(b"/health", sitemap.data)
+        robots = self.client.get("/robots.txt")
+        self.assertEqual(robots.status_code, 200)
+        self.assertIn(b"Sitemap: https://grandpasdrum.com/sitemap.xml", robots.data)
+
     def test_missing_page(self):
         self.assertEqual(self.client.get("/nonexistent-page").status_code, 404)
 
