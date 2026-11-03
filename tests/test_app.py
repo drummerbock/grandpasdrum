@@ -60,6 +60,19 @@ class ApplicationTests(unittest.TestCase):
         self.assertNotIn(b"<form", response.data)
         self.assertEqual(self.client.post("/request", data={"email": "test@example.com"}).status_code, 405)
 
+    def test_contact_form_embed(self):
+        response = self.client.get("/contact")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'data-fillout-id="sjiuKo9q7Vus"', response.data)
+        self.assertIn(b'data-fillout-embed-type="standard"', response.data)
+        self.assertIn(b'data-fillout-dynamic-resize', response.data)
+        self.assertIn(b'https://server.fillout.com/embed/v1/', response.data)
+        self.assertIn(b'href="/privacy"', response.data)
+        self.assertNotIn(b"<form", response.data)
+        self.assertEqual(self.client.post("/contact", data={"email": "test@example.com"}).status_code, 405)
+        home = self.client.get("/")
+        self.assertIn(b'href="/contact"', home.data)
+
     def test_volunteer_inquiries_not_yet_open(self):
         response = self.client.get("/get-involved")
         self.assertIn(b"Online inquiries are not yet open", response.data)
@@ -76,6 +89,7 @@ class ApplicationTests(unittest.TestCase):
         self.assertIn(b"Unsplash", response.data)
         self.assertIn(b"Fillout", response.data)
         self.assertIn(b"Instrument request applicant information", response.data)
+        self.assertIn(b"General contact messages", response.data)
         self.assertIn(b"501(c)(3)", response.data)
         self.assertNotIn(b"<form", response.data)
         home = self.client.get("/")
@@ -97,7 +111,7 @@ class ApplicationTests(unittest.TestCase):
         self.assertIn(b"focus-visible", stylesheet.data)
 
     def test_seo_metadata(self):
-        for path in ("/", "/our-story", "/donate", "/request", "/impact", "/get-involved", "/privacy"):
+        for path in ("/", "/our-story", "/donate", "/request", "/impact", "/get-involved", "/contact", "/privacy"):
             with self.subTest(path=path):
                 response = self.client.get(path)
                 self.assertEqual(response.status_code, 200)
@@ -112,7 +126,7 @@ class ApplicationTests(unittest.TestCase):
         sitemap = self.client.get("/sitemap.xml")
         self.assertEqual(sitemap.status_code, 200)
         self.assertIn(b"application/xml", sitemap.content_type.encode())
-        for path in ("/", "/our-story", "/donate", "/request", "/impact", "/get-involved", "/privacy"):
+        for path in ("/", "/our-story", "/donate", "/request", "/impact", "/get-involved", "/contact", "/privacy"):
             self.assertIn(("https://grandpasdrum.com" + path + "</").encode(), sitemap.data)
         self.assertNotIn(b"/health", sitemap.data)
         robots = self.client.get("/robots.txt")

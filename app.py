@@ -28,7 +28,7 @@ def robots():
 @app.get("/sitemap.xml")
 def sitemap():
     root = Element("urlset", xmlns="http://www.sitemaps.org/schemas/sitemap/0.9")
-    for path in ["/", "/our-story", "/donate", "/request", "/impact", "/get-involved", "/privacy"]:
+    for path in ["/", "/our-story", "/donate", "/request", "/impact", "/get-involved", "/contact", "/privacy"]:
         SubElement(SubElement(root, "url"), "loc").text = SITE_URL + path
     return Response(tostring(root, encoding="utf-8", xml_declaration=True), mimetype="application/xml")
 
@@ -41,6 +41,11 @@ def health():
 @app.get("/")
 def index():
     return render_template("index.html", title="Every Drum Has a Story", description="Grandpa's Drum collects, restores, and redistributes donated percussion instruments, beginning in New York's Hudson Valley.")
+
+
+@app.get("/contact")
+def contact():
+    return render_template("contact.html", title="Contact Us", description="Contact Grandpa's Drum about general questions, ideas and community partnerships in the Hudson Valley.")
 
 
 @app.get("/privacy")
