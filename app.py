@@ -21,6 +21,11 @@ def index():
     return render_template("index.html", title="Every Drum Has a Story", description="Grandpa's Drum collects, restores, and redistributes donated percussion instruments, beginning in New York's Hudson Valley.")
 
 
+@app.get("/privacy")
+def privacy():
+    return render_template("privacy.html", title="Privacy & Transparency", description="Learn how Grandpa\'s Drum approaches visitor privacy and its current operating status.")
+
+
 @app.get("/<slug>")
 def information_page(slug):
     page = PAGES.get(slug)
