@@ -22,7 +22,7 @@ def seo_context():
 
 @app.get("/robots.txt")
 def robots():
-    return Response("User-agent: *\\nAllow: /\\nSitemap: " + SITE_URL + "/sitemap.xml\\n", mimetype="text/plain")
+    return Response("User-agent: *\nAllow: /\nSitemap: " + SITE_URL + "/sitemap.xml\n", mimetype="text/plain")
 
 
 @app.get("/sitemap.xml")

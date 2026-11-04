@@ -131,7 +131,7 @@ class ApplicationTests(unittest.TestCase):
         self.assertNotIn(b"/health", sitemap.data)
         robots = self.client.get("/robots.txt")
         self.assertEqual(robots.status_code, 200)
-        self.assertIn(b"Sitemap: https://grandpasdrum.com/sitemap.xml", robots.data)
+        self.assertEqual(robots.data, b"User-agent: *\\nAllow: /\\nSitemap: https://grandpasdrum.com/sitemap.xml\\n")
 
     def test_missing_page(self):
         self.assertEqual(self.client.get("/nonexistent-page").status_code, 404)
