@@ -41,23 +41,52 @@ jobs:
           test -n "$VPS_USER"
           tar --exclude=.git --exclude=.github --exclude=.venv --exclude=.env --exclude=uploads --exclude='*.sqlite3' -czf /tmp/grandpasdrum.tar.gz .
           scp -o StrictHostKeyChecking=yes /tmp/grandpasdrum.tar.gz "$VPS_USER@$VPS_HOST:~/grandpasdrum.tar.gz"
-          ssh -o StrictHostKeyChecking=yes "$VPS_USER@$VPS_HOST" 'bash -se' <<'REMOTE'
+          ssh -o StrictHostKeyChecking=yes "$VPS_USER@$VPS_HOST" "DEPLOY_ID=${GITHUB_SHA}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT} bash -se" <<'REMOTE'
           set -euo pipefail
           cd ~/grandpasdrum
-          test -x .venv/bin/python
           tar -xzf ~/grandpasdrum.tar.gz
           rm ~/grandpasdrum.tar.gz
-          .venv/bin/python -m pip install -r requirements.txt
-          .venv/bin/python -m unittest discover -s tests -v
+
+          VENV_ROOT="$HOME/.grandpasdrum-venvs"
+          VENV_LINK="$HOME/grandpasdrum/.venv"
+          VENV_CANDIDATE="$VENV_ROOT/grandpasdrum-$DEPLOY_ID"
+          VENV_BACKUP="$VENV_ROOT/grandpasdrum-legacy-$DEPLOY_ID"
+          OLD_VENV=""
+
+          mkdir -p "$VENV_ROOT"
+          rm -rf "$VENV_CANDIDATE"
+          python3 -m venv "$VENV_CANDIDATE"
+          "$VENV_CANDIDATE/bin/python" -m pip install --upgrade pip
+          "$VENV_CANDIDATE/bin/python" -m pip install -r requirements.txt
+          "$VENV_CANDIDATE/bin/python" -m unittest discover -s tests -v
+
+          if [ -L "$VENV_LINK" ]; then
+            OLD_VENV="$(readlink -f "$VENV_LINK" || true)"
+          elif [ -d "$VENV_LINK" ]; then
+            mv "$VENV_LINK" "$VENV_BACKUP"
+            OLD_VENV="$VENV_BACKUP"
+          fi
+
+          ln -s "$VENV_CANDIDATE" "$VENV_LINK"
           systemctl --user restart grandpasdrum
+
           for i in 1 2 3 4 5 6 7 8 9 10; do
             if curl --fail --silent --show-error http://127.0.0.1:8765/health; then
+              if [ -n "$OLD_VENV" ] && [ "$OLD_VENV" != "$VENV_CANDIDATE" ]; then
+                rm -rf "$OLD_VENV"
+              fi
               echo "Deployment health check passed"
               exit 0
             fi
             sleep 2
           done
-          echo "Deployment health check failed" >&2
+
+          echo "New Grandpa's Drum environment failed; restoring previous environment" >&2
+          rm -f "$VENV_LINK"
+          if [ -n "$OLD_VENV" ] && [ -d "$OLD_VENV" ]; then
+            mv "$OLD_VENV" "$VENV_LINK"
+            systemctl --user restart grandpasdrum || true
+          fi
           journalctl --user -u grandpasdrum --no-pager -n 30 || true
           exit 1
           REMOTE
