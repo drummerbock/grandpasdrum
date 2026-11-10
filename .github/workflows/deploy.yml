@@ -60,6 +60,8 @@ jobs:
           "$VENV_CANDIDATE/bin/python" -m pip install -r requirements.txt
           "$VENV_CANDIDATE/bin/python" -m unittest discover -s tests -v
 
+          # Replace an existing venv symlink atomically. Plain ln -s fails
+          # on subsequent deployments when .venv already exists.
           if [ -L "$VENV_LINK" ]; then
             OLD_VENV="$(readlink -f "$VENV_LINK" || true)"
           elif [ -d "$VENV_LINK" ]; then
@@ -67,14 +69,13 @@ jobs:
             OLD_VENV="$VENV_BACKUP"
           fi
 
-          ln -s "$VENV_CANDIDATE" "$VENV_LINK"
+          NEXT_LINK="$HOME/grandpasdrum/.venv-next-$DEPLOY_ID"
+          ln -s "$VENV_CANDIDATE" "$NEXT_LINK"
+          mv -Tf "$NEXT_LINK" "$VENV_LINK"
           systemctl --user restart grandpasdrum
 
           for i in 1 2 3 4 5 6 7 8 9 10; do
             if curl --fail --silent --show-error http://127.0.0.1:8765/health; then
-              if [ -n "$OLD_VENV" ] && [ "$OLD_VENV" != "$VENV_CANDIDATE" ]; then
-                rm -rf "$OLD_VENV"
-              fi
               echo "Deployment health check passed"
               exit 0
             fi
@@ -82,10 +83,13 @@ jobs:
           done
 
           echo "New Grandpa's Drum environment failed; restoring previous environment" >&2
-          rm -f "$VENV_LINK"
           if [ -n "$OLD_VENV" ] && [ -d "$OLD_VENV" ]; then
-            mv "$OLD_VENV" "$VENV_LINK"
+            RESTORE_LINK="$HOME/grandpasdrum/.venv-restore-$DEPLOY_ID"
+            ln -s "$OLD_VENV" "$RESTORE_LINK"
+            mv -Tf "$RESTORE_LINK" "$VENV_LINK"
             systemctl --user restart grandpasdrum || true
+          else
+            rm -f "$VENV_LINK"
           fi
           journalctl --user -u grandpasdrum --no-pager -n 30 || true
           exit 1
